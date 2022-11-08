@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Todo from './Todo';
 import {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 
 export default function TodoList() {
     const [todos, setTodos] = useState([]);
@@ -10,16 +10,18 @@ export default function TodoList() {
 
     useEffect(() => {
         const subscriber = firestore()
-        .collection('todos')
-        .where('owner', '==', auth().currentUser.email)
-        .onSnapshot(querySnapshot => {
-            const todolist = [];
-            querySnapshot.forEach(documentSnapshot => {
-            todolist.push({
-                ...documentSnapshot.data(),
-                key: documentSnapshot.id,
+            .collection('todos')
+            .where('owner', '==', auth().currentUser.email)
+            .onSnapshot(querySnapshot => {
+                console.log(querySnapshot)
+                const todolist = [];
+                querySnapshot.forEach(documentSnapshot => {
+                    todolist.push({
+                        ...documentSnapshot.data(),
+                        id: documentSnapshot.id,
+                    });
             });
-            });
+
             setTodos(todolist);
             setLoading(false);
             console.log(todolist);
@@ -34,8 +36,8 @@ export default function TodoList() {
         {loading ? (
             <ActivityIndicator/>
         ) : (
-            todos.map((todo, index) => (
-                <Todo key={index} title={todo.title} description={todo.description} completed={todo.completed} />
+            todos.map((todo) => (
+                <Todo key={todo.id} id={todo.id} title={todo.title} description={todo.description} completed={todo.completed} date={todo.date} />
             ))
         )}
     </View>

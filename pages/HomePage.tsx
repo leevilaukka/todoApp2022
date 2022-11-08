@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, Text, SafeAreaView, Button} from 'react-native';
+import {View, Text, Button, ScrollView} from 'react-native';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import TodoList from '../components/TodoList';
-import { firebase } from '@react-native-firebase/firestore';
 
 export default function HomePage({navigation, params}: any) {
   const [user, setUser] = React.useState<FirebaseAuthTypes.User>();
@@ -13,7 +12,7 @@ export default function HomePage({navigation, params}: any) {
         setUser(user);
       } else {
         setUser(undefined);
-        navigation.navigate('LoginPage');
+        navigation.navigate('WelcomePage');
       }
     });
 
@@ -22,17 +21,32 @@ export default function HomePage({navigation, params}: any) {
 
   return (
     <View>
-      <Text>HomePage</Text>
-      {auth().currentUser ? (
-        <View>
-          <Text>You're logged in as {user?.email} </Text>
-          <TodoList />
+      {user ? (
+        <ScrollView>
+          <View
+            style={{
+              margin: 20
+            }}
+          >
           <Button
-            title="Create Todo!"
-            onPress={() => navigation.navigate('CreateTodoPage')}
-          />
-          <Button title="Logout" onPress={() => auth().signOut()} />
-        </View>
+              title="Create Todo!"
+              color={"green"}
+              onPress={() => navigation.navigate('CreateTodoPage')}
+            />
+          </View>
+          
+          <TodoList />
+          <View style={{margin: 20}}>
+            
+            <Text
+              style={{alignContent: 'center', textAlign: 'center', paddingTop: 10}}>
+            You're logged in as {user?.email} </Text>
+            <Button title="Logout" color="red" onPress={() => auth().signOut()} />
+            <View style={{margin: 20}}>          
+              <Button title="Contact" onPress={() => navigation.navigate("AboutPage")} />
+            </View>
+          </View>
+        </ScrollView>
       ) : (
         <View>
           <Text>You're not logged in</Text>
@@ -46,6 +60,8 @@ export default function HomePage({navigation, params}: any) {
           />
         </View>
       )}
+
+      
     </View>
   );
 }

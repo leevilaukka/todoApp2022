@@ -6,7 +6,15 @@ export default function SignupPage({navigation}: any) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+  const [errors, setErrors] = React.useState<string[]>([]);
+    
+
   const handleSignup = async () => {
+    if (email === '' || password === '') {
+      setErrors(['Please fill in all fields', ...errors]);
+      return;
+    }
+
     await auth()
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
@@ -14,10 +22,7 @@ export default function SignupPage({navigation}: any) {
         navigation.navigate('HomePage', {user});
       })
       .catch(error => {
-        console.error(error);
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
+        setErrors([ error.message, ...errors ]);
       });
   };
 
@@ -27,13 +32,33 @@ export default function SignupPage({navigation}: any) {
       {/* login form */}
       <View>
         <Text>Email</Text>
-        <TextInput value={email} onChangeText={setEmail} />
+        <TextInput value={email} onChangeText={(text: string) => {
+          if(text.length > 0) {
+            setErrors(errors.filter(error => error !== 'Email cannot be empty'));
+          } else {
+            setErrors([ 'Email cannot be empty', ...errors ]);
+          }
+          setEmail(text);
+          setErrors([]);
+        }} />
         <Text>Password</Text>
-        <TextInput value={password} onChangeText={setPassword} />
-        <Text>Confirm Password</Text>
-        <TextInput value={password} onChangeText={setPassword} />
+        <TextInput value={password} 
+          secureTextEntry
+          onChangeText={(text: string) => {
+            if (text.length < 6) {
+              setErrors(['Password must be at least 6 characters']);
+            } else {
+              setErrors([]);
+            }
+            setPassword(text);
+            setErrors([]);
+          }}  
+        />
+        {errors.map((error, index) => {
+          return <Text key={index}>{error}</Text>;
+        })}
         {/* login button */}
-        <Button title="Signup" onPress={handleSignup} />
+        <Button title="Signup" disabled={errors.length > 0} onPress={handleSignup} />
         <Button title='To home' onPress={() => navigation.navigate('HomePage')} />
       </View>
     </View>

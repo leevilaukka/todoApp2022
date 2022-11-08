@@ -10,20 +10,14 @@
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React from 'react';
+import {Button, StyleSheet} from 'react-native';
+import AboutPage from './pages/AboutPage';
 import CreateTodo from './pages/CreateTodo';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import WelcomePage from './pages/WelcomePage';
 
 const Stack = createStackNavigator();
 
@@ -31,10 +25,48 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="HomePage">
-        <Stack.Screen name="SignupPage" component={SignupPage} />
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="CreateTodoPage" component={CreateTodo} />
-        <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen
+          name="SignupPage"
+          component={SignupPage}
+          options={{
+            title: 'Sign Up',
+          }}
+        />
+        <Stack.Screen
+          name="LoginPage"
+          component={LoginPage}
+          options={{
+            title: 'Login',
+          }}
+        />
+        <Stack.Screen
+          name="CreateTodoPage"
+          component={CreateTodo}
+          options={{
+            title: 'Create Todo',
+          }}
+        />
+        <Stack.Screen
+          name="HomePage"
+          component={HomePage}
+          options={{
+            title: 'Todo App',
+          }}
+        />
+        <Stack.Screen
+          name="WelcomePage"
+          component={WelcomePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AboutPage"
+          component={AboutPage}
+          options={{
+            title: 'Concact',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
